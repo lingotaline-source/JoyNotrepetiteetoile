@@ -1,0 +1,119 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: contributions
+// Fields: authorName (string), message (string), imageUrl (string), type (string), year (int), createdAt (timestamp), uid (string)
+//
+// Collection: candles
+// Fields: authorName (string), prayer (string), year (int), createdAt (timestamp), uid (string)
+//
+// Collection: themes
+// Fields: year (int), title (string), description (string), imageUrl (string), downloadUrl (string), age (int)
+//
+// Collection: yearlyNotes
+// Fields: authorName (string), message (string), year (int), createdAt (timestamp), uid (string)
+//
+// Collection: settings
+// Fields: heroImageUrl (string), heroDescription (string), showHeroBadge (bool)
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        ((request.auth.token.email == "mariealexandra.lopez@gmail.com" || request.auth.token.email == "lingot.aline@gmail.com") && request.auth.token.email_verified == true);
+    }
+
+    function isValidString(val, min, max) {
+      return val is string && val.size() >= min && val.size() <= max;
+    }
+
+    function isValidCounterUpdate(field) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field]) &&
+             request.resource.data[field] == resource.data[field] + 1;
+    }
+
+    // Rules
+    
+    match /themes/{themeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /souvenirs/{souvenirId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /candles/{candleId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['authorName', 'year', 'createdAt', 'uid']) &&
+        (request.resource.data.uid == 'anonymous' || (isAuthenticated() && request.resource.data.uid == request.auth.uid));
+      allow update: if isValidCounterUpdate('likesCount') || isAdmin();
+      allow delete: if (isAuthenticated() && resource.data.uid == request.auth.uid) || isAdmin();
+    }
+    
+    match /contributions/{contribId} {
+      allow read: if true;
+      allow create: if (request.resource.data.uid == 'anonymous' || (isAuthenticated() && request.resource.data.uid == request.auth.uid)) && 
+        request.resource.data.keys().hasAll(['authorName', 'type', 'year', 'createdAt', 'uid']);
+      allow update: if isValidCounterUpdate('likesCount') || (isAuthenticated() && resource.data.uid == request.auth.uid) || isAdmin();
+      allow delete: if (isAuthenticated() && resource.data.uid == request.auth.uid) || isAdmin();
+    }
+    
+    match /yearlyNotes/{noteId} {
+      allow read: if true;
+      allow create: if (request.resource.data.uid == 'anonymous' || (isAuthenticated() && request.resource.data.uid == request.auth.uid)) && 
+        request.resource.data.keys().hasAll(['authorName', 'message', 'year', 'createdAt', 'uid']);
+      allow update: if isValidCounterUpdate('likesCount') || (isAuthenticated() && resource.data.uid == request.auth.uid) || isAdmin();
+      allow delete: if (isAuthenticated() && resource.data.uid == request.auth.uid) || isAdmin();
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /likes/{likeId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['count']) && request.resource.data.count == 1;
+      allow update: if isValidCounterUpdate('count');
+    }
+
+    match /rotations/{rotationId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /candle_library/{candleLibId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /confidences/{confidenceId} {
+      allow read: if resource.data.isPublic == true || (isAuthenticated() && resource.data.authorId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid &&
+        request.resource.data.keys().hasAll(['authorName', 'content', 'isPublic', 'authorId', 'createdAt']);
+      allow update: if (isAuthenticated() && resource.data.authorId == request.auth.uid) || isAdmin() || isValidCounterUpdate('likesCount');
+      allow delete: if (isAuthenticated() && resource.data.authorId == request.auth.uid) || isAdmin();
+    }
+
+    match /test/{testId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

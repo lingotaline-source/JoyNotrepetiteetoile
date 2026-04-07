@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Lato:wght@300;400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Bodoni Moda", serif;
+  --font-sans: "Lato", sans-serif;
+  --color-paper: #FDFBFA;
+  --color-gold: #C0A87C;
+  --color-warm-pink: #D5BDB2;
+  --color-deep-brown: #3F3734;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(var(--marquee-distance)); }
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration) linear infinite;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-deep-brown font-sans antialiased;
+    background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+  }
+}
+
+@layer components {
+  .paper-texture {
+    position: relative;
+  }
+  .paper-texture::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+.warm-overlay {
+  position: relative;
+}
+.warm-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(213, 189, 178, 0.15); /* Warm pink overlay */
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.gold-glow {
+  box-shadow: 0 0 15px rgba(192, 168, 124, 0.3);
+}
+
+.soft-shadow {
+  box-shadow: 0 10px 30px -10px rgba(63, 55, 52, 0.1);
+}
+
+.gold-border {
+  border: 1px solid #C0A87C;
+}
+
+.gold-text {
+  color: #C0A87C;
+}
+
+.serif-title {
+  font-family: var(--font-serif);
+  letter-spacing: 0.05em;
+}
+
+.sans-subtitle {
+  font-family: var(--font-sans);
+  font-weight: 300;
+}

@@ -1,0 +1,143 @@
+{
+  "entities": {
+    "contribution": {
+      "title": "Contribution",
+      "description": "A memory shared by a user (drawing, message, or photo)",
+      "type": "object",
+      "properties": {
+        "authorName": { "type": "string" },
+        "message": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "type": { "type": "string", "enum": ["drawing", "message", "both"] },
+        "year": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "uid": { "type": "string" },
+        "likesCount": { "type": "integer", "default": 0 }
+      },
+      "required": ["authorName", "type", "year", "createdAt", "uid"]
+    },
+    "candle": {
+      "title": "Candle",
+      "description": "A virtual candle lit for Joy",
+      "type": "object",
+      "properties": {
+        "authorName": { "type": "string" },
+        "prayer": { "type": "string" },
+        "year": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "uid": { "type": "string" },
+        "likesCount": { "type": "integer", "default": 0 }
+      },
+      "required": ["authorName", "year", "createdAt", "uid"]
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "The artistic theme for a specific year",
+      "type": "object",
+      "properties": {
+        "year": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "downloadUrl": { "type": "string" },
+        "age": { "type": "integer" }
+      },
+      "required": ["year", "title", "description", "imageUrl", "age"]
+    },
+    "yearlyNote": {
+      "title": "Yearly Note",
+      "description": "A free-form message for a specific year",
+      "type": "object",
+      "properties": {
+        "authorName": { "type": "string" },
+        "message": { "type": "string" },
+        "year": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "uid": { "type": "string" },
+        "likesCount": { "type": "integer", "default": 0 }
+      },
+      "required": ["authorName", "message", "year", "createdAt", "uid"]
+    },
+    "settings": {
+      "title": "Global Settings",
+      "description": "Global application settings for hero and project description",
+      "type": "object",
+      "properties": {
+        "heroImageUrl": { "type": "string" },
+        "heroDescription": { "type": "string" },
+        "showHeroBadge": { "type": "boolean" },
+        "sitePassword": { "type": "string" },
+        "backgroundMusicUrl": { "type": "string" },
+        "enableParticles": { "type": "boolean" },
+        "enableNightMode": { "type": "boolean" }
+      },
+      "required": ["heroImageUrl", "heroDescription", "showHeroBadge"]
+    },
+    "souvenir": {
+      "title": "Souvenir",
+      "description": "A photo souvenir of Joy",
+      "type": "object",
+      "properties": {
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["imageUrl", "createdAt"]
+    },
+    "like": {
+      "title": "Like",
+      "description": "A like count for a specific item",
+      "type": "object",
+      "properties": {
+        "count": { "type": "integer" }
+      },
+      "required": ["count"]
+    },
+    "rotation": {
+      "title": "Rotation",
+      "description": "Image rotation information",
+      "type": "object",
+      "properties": {
+        "url": { "type": "string" },
+        "rotation": { "type": "integer" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["url", "rotation", "updatedAt"]
+    },
+    "confidence": {
+      "title": "Confidence",
+      "description": "A private or public message written to Joy",
+      "type": "object",
+      "properties": {
+        "authorName": { "type": "string" },
+        "content": { "type": "string" },
+        "isPublic": { "type": "boolean" },
+        "authorId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "likesCount": { "type": "integer", "default": 0 }
+      },
+      "required": ["authorName", "content", "isPublic", "authorId", "createdAt"]
+    },
+    "candle_library": {
+      "title": "Candle Library",
+      "description": "A library of candle images for users to choose from",
+      "type": "object",
+      "properties": {
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["imageUrl", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/contributions/{id}": { "schema": "contribution", "description": "Collection of memories" },
+    "/candles/{id}": { "schema": "candle", "description": "Collection of lit candles" },
+    "/themes/{id}": { "schema": "theme", "description": "Collection of yearly themes" },
+    "/yearlyNotes/{id}": { "schema": "yearlyNote", "description": "Collection of yearly messages" },
+    "/settings/{id}": { "schema": "settings", "description": "Global application settings" },
+    "/souvenirs/{id}": { "schema": "souvenir", "description": "Collection of photo souvenirs" },
+    "/likes/{id}": { "schema": "like", "description": "Collection of like counts" },
+    "/rotations/{id}": { "schema": "rotation", "description": "Collection of image rotations" },
+    "/candle_library/{id}": { "schema": "candle_library", "description": "Collection of candle images" },
+    "/confidences/{id}": { "schema": "confidence", "description": "Collection of confidences" }
+  }
+}
