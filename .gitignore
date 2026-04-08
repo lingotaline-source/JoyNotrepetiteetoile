@@ -1,8 +1,12 @@
 node_modules/
 build/
 dist/
+dist_backup/
 coverage/
 .DS_Store
 *.log
 .env*
 !.env.example
+firebase-applet-config.json
+grep_output.txt
+postimg_lines.txt
